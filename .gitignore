@@ -1,0 +1,6 @@
+# Ignora le credenziali del database
+config/db_config.php
+
+# Ignora file di sistema
+.DS_Store
+Thumbs.db
