@@ -174,7 +174,7 @@
                             </label>
                         </div>
 
-                        <div class="g-recaptcha mb-3" data-sitekey="6LfSaOYsAAAAAIQVoQzpkySQRxA-0ZE0sYtt8zYy"></div>
+                        <div class="g-recaptcha mb-3" id="recaptcha-group" data-sitekey="6LfSaOYsAAAAAIQVoQzpkySQRxA-0ZE0sYtt8zYy" style="display: none;"></div>
 
                         <button type="submit" class="btn btn-verde-zen w-100" id="btn-auth-submit">Accedi</button>
                         <div class="text-center mt-3">
@@ -186,8 +186,8 @@
         </div>
     </div>
 
-
-
+<!-- async — scarica lo script in parallelo senza bloccare la pagina --- defer — esegue lo script solo dopo che il DOM è pronto -->
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="assets/js/api.js"></script>
     <script src="assets/js/ui.js"></script>

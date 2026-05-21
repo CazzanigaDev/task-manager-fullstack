@@ -37,7 +37,7 @@ const TaskUI = {
 
       const taskCard = document.createElement("div");
       taskCard.className = "card card-libro border-0 shadow-sm mb-3 fade-in";
-      taskCard.dataset.id = objTask.id; 
+      taskCard.dataset.id = objTask.id;
       const titoloSafe = objTask.titolo.replace(/'/g, "\\'");
 
       // Usiamo TaskUI.getColorePriorita per il colore
@@ -262,35 +262,41 @@ const TaskUI = {
     });
   },
 
-mostraModalAuth: (modo) => {
-    isLoginMode = (modo === "login");
-    
+  mostraModalAuth: (modo) => {
+    isLoginMode = modo === "login";
+
     // Cambiamo il titolo e il testo del bottone
     const titolo = document.getElementById("authTitle");
     const submitBtn = document.getElementById("btn-auth-submit");
-    if (titolo) titolo.textContent = isLoginMode ? "Bentornato" : "Crea Account";
-    if (submitBtn) submitBtn.textContent = isLoginMode ? "Accedi" : "Registrati";
+    if (titolo)
+      titolo.textContent = isLoginMode ? "Bentornato" : "Crea Account";
+    if (submitBtn)
+      submitBtn.textContent = isLoginMode ? "Accedi" : "Registrati";
 
     // Gestiamo la visibilità dei gruppi (Nome, Conferma Password, Termini)
     // Usiamo .style.display invece di .classList così non rischiamo errori
     const groupNome = document.getElementById("group-nome");
     const groupConfirm = document.getElementById("confirm-password-group");
     const groupTerms = document.getElementById("terms-group");
+    const groupCaptcha = document.getElementById("recaptcha-group");
 
     const displayStyle = isLoginMode ? "none" : "block";
 
     if (groupNome) groupNome.style.display = displayStyle;
     if (groupConfirm) groupConfirm.style.display = displayStyle;
     if (groupTerms) groupTerms.style.display = displayStyle;
+    if (groupCaptcha) groupCaptcha.style.display = displayStyle;
 
     // Mostriamo la modale
     const modalElement = document.getElementById("authModal");
     if (modalElement) {
-        const modal = bootstrap.Modal.getInstance(modalElement) || new bootstrap.Modal(modalElement);
-        modal.show();
+      const modal =
+        bootstrap.Modal.getInstance(modalElement) ||
+        new bootstrap.Modal(modalElement);
+      modal.show();
     }
     return isLoginMode;
-},
+  },
 
   // --- NUOVO METODO TaskUI.mostraConfirmEliminaLista ---
   mostraConfirmEliminaLista: (titolo) => {
