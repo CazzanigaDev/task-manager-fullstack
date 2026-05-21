@@ -1,0 +1,198 @@
+/* TASKZEN - STYLESHEET OPTIMIZED 2026 
+    Palette: Verde Salvia, Antracite, Oro Zen
+*/
+
+:root {
+    --zen-verde: #6b8e23;
+    --zen-verde-dark: #556b2f;
+    --zen-antracite: #37474f;
+    --zen-bg: #f4f7f6;
+    --zen-oro: #f9a825;
+    --zen-white: #ffffff;
+    --zen-shadow: 0 8px 30px rgba(0, 0, 0, 0.04);
+}
+
+body {
+    background-color: var(--zen-bg);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    color: var(--zen-antracite);
+    line-height: 1.6;
+}
+
+/* --- NAVBAR --- */
+.navbar {
+    background-color: var(--zen-white) !important;
+    border-bottom: 3px solid var(--zen-verde);
+    box-shadow: var(--zen-shadow);
+}
+
+.navbar-brand fw-bold {
+    color: var(--zen-verde) !important;
+}
+
+/* --- CARTE LISTE (COLONNE) --- */
+.card-zen {
+    background: var(--zen-white);
+    border-radius: 16px;
+    border: none;
+    border-left: 6px solid var(--zen-verde) !important;
+    box-shadow: var(--zen-shadow);
+    transition: transform 0.3s ease;
+}
+
+.text-primary-zen {
+    color: var(--zen-verde) !important;
+    letter-spacing: -0.5px;
+}
+
+/* --- CARTE TASK (GLI OBIETTIVI) --- */
+.card-libro {
+    border-radius: 12px;
+    border: 1px solid rgba(0,0,0,0.03) !important;
+    background: var(--zen-white);
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.card-libro:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 24px rgba(0,0,0,0.08) !important;
+    border-color: var(--zen-verde) !important;
+}
+
+/* --- INPUT & FORM --- */
+.form-control-zen {
+    border-radius: 10px;
+    border: 1.5px solid #e0e6e4;
+    padding: 12px;
+    transition: all 0.3s ease;
+}
+
+.form-control-zen:focus {
+    border-color: var(--zen-verde);
+    box-shadow: 0 0 0 4px rgba(107, 142, 35, 0.1);
+    outline: none;
+}
+
+/* --- BOTTONI --- */
+.btn-zen-primary {
+    background-color: var(--zen-verde);
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 10px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.btn-zen-primary:hover {
+    background-color: var(--zen-verde-dark);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(107, 142, 35, 0.2);
+    color: white;
+}
+
+/* --- OVERLAY MODIFICA (IL POPUP) --- */
+.edit-overlay {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(55, 71, 79, 0.8); /* Antracite trasparente */
+    backdrop-filter: blur(4px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+}
+
+.edit-card-modal {
+    background: white;
+    width: 90%;
+    max-width: 500px;
+    border-radius: 20px;
+    animation: slideUp 0.3s ease-out;
+}
+
+/* --- NOTIFICHE & BANNER --- */
+#toast-container {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 10000;
+}
+
+.alert {
+    border-radius: 12px;
+    font-weight: 500;
+}
+
+#guest-banner {
+    background-color: var(--zen-antracite);
+    color: #cfd8dc;
+    border: none;
+    border-radius: 0;
+    margin-bottom: 0;
+}
+
+/* --- ANIMAZIONI --- */
+@keyframes fade-in {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.fade-in {
+    animation: fade-in 0.4s ease-out forwards;
+}
+
+@keyframes slideUp {
+    from { transform: translateY(20px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+/* --- UTILITY --- */
+.editable-title {
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+.editable-title:hover {
+    color: var(--zen-oro) !important;
+}
+
+.input-edit-inline {
+    font-size: 1.25rem;
+    font-weight: bold;
+    color: var(--zen-verde);
+    border: none;
+    border-bottom: 2px solid var(--zen-verde);
+    background: transparent;
+    outline: none;
+}
+
+/* Bottone "+" per aggiungere liste - Verde Salvia */
+.btn-add-list {
+    background-color: var(--zen-verde) !important;
+    color: white !important;
+    border: none;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.btn-add-list:hover {
+    background-color: var(--zen-verde-dark) !important;
+    transform: scale(1.05);
+}
+
+/* Bottone "Svuota Lavagna" - Rosso Corallo */
+.btn-svuota-zen {
+    background-color: #e57373 !important; /* Rosso Corallo */
+    color: white !important;
+    border: none;
+    border-radius: 8px;
+    padding: 8px 16px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.btn-svuota-zen:hover {
+    background-color: #d32f2f !important; /* Rosso più intenso al passaggio */
+    box-shadow: 0 4px 12px rgba(229, 115, 115, 0.3);
+}

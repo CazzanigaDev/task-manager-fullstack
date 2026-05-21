@@ -4,3 +4,6 @@ config/db_config.php
 # Ignora file di sistema
 .DS_Store
 Thumbs.db
+
+# Variabili d'ambiente
+.env
