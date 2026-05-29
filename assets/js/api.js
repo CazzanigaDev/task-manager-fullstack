@@ -54,4 +54,40 @@ const TaskAPI = {
       return { status: "error", message: "Errore di connessione" };
     }
   },
+
+  // --- NUOVE CHIAMATE PER LA GESTIONE DELLE LISTE ---
+  getLists: async () => {
+    try {
+      const res = await fetch("api/get_lists.php");
+      return await res.json();
+    } catch (e) {
+      return { status: "error", message: "Errore di connessione" };
+    }
+  },
+
+  saveList: async (payload) => {
+    try {
+      const res = await fetch("api/save_lists.php", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload), // payload può contenere { titolo } per creare o { id, titolo } per rinominare
+      });
+      return await res.json();
+    } catch (e) {
+      return { status: "error", message: "Errore di connessione" };
+    }
+  },
+
+  deleteList: async (payload) => {
+    try {
+      const res = await fetch("api/delete_lists.php", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload), // payload sarà { titolo: "Nome Lista" }
+      });
+      return await res.json();
+    } catch (e) {
+      return { status: "error", message: "Errore di connessione" };
+    }
+  },
 };

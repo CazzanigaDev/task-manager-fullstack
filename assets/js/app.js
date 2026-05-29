@@ -51,40 +51,66 @@ const aggiornaUIUtente = () => {
 // --- FUNZIONI DI GESTIONE LISTE ---
 
 // --- LOGICA RINOMINA LISTA AGGIORNATA ---
-const eseguiRinominaLista = (input, vecchioTitolo) => {
+const eseguiRinominaLista = async (input, vecchioTitolo) => {
   const isLogged = localStorage.getItem("isLogged") === "true";
 
-  // Se non è loggato, impediamo la rinomina (o gestiscila solo locale se preferisci)
   if (!isLogged) {
     TaskUI.mostraNotifica(
       "Registrati per gestire le liste personalizzate!",
       "info",
     );
     apriAuth("signup");
-    location.reload(); // Ripristina il titolo originale
+    setTimeout(() => location.reload(), 1000); // Ricarica dopo un secondo per ripristinare il nome vecchio graficamente
     return;
   }
 
   const nuovo = input.value.trim();
   if (!nuovo || vecchioTitolo === nuovo) return location.reload();
 
+  // UTENTE LOGGATO: Aggiorna il DB
+  const resListe = await TaskAPI.getLists();
+  if (resListe.status === "success") {
+    const listaDaModificare = resListe.data.find(
+      (l) => l.titolo === vecchioTitolo,
+    );
+
+    if (listaDaModificare) {
+      // Inviamo ID e nuovo Titolo al nostro save_list.php
+      const data = await TaskAPI.saveList({
+        id: listaDaModificare.id,
+        titolo: nuovo,
+      });
+      if (data.status !== "success") {
+        TaskUI.mostraNotifica(
+          "Errore durante la rinomina sul server",
+          "danger",
+        );
+        return location.reload();
+      }
+    }
+  }
+
+  // 2. Aggiornamento in locale di liste e relativi task associati
   const index = nomiListe.indexOf(vecchioTitolo);
   if (index !== -1) {
     nomiListe[index] = nuovo;
     localStorage.setItem(LISTE_KEY, JSON.stringify(nomiListe));
+
     lavagna.forEach((t) => {
       if (t.lista_riferimento === vecchioTitolo) t.lista_riferimento = nuovo;
     });
     localStorage.setItem(STORAGE_KEY, JSON.stringify(lavagna));
-    // Qui poi aggiungeremo la chiamata API per rinominare sul DB
+
+    // Ricarichiamo per ridisegnare la UI con i nuovi nomi stabili
     location.reload();
   }
 };
 
 //aggiungiLista
-const aggiungiLista = () => {
+const aggiungiLista = async () => {
   const input = document.getElementById("list-title");
   const titolo = input?.value.trim();
+  const isLogged = localStorage.getItem("isLogged") === "true";
 
   if (
     !titolo ||
@@ -95,33 +121,64 @@ const aggiungiLista = () => {
   }
 
   input.classList.remove("is-invalid");
+
+  if (isLogged) {
+    // Salvataggio su Database
+    const data = await TaskAPI.saveList({ titolo: titolo });
+    if (data.status !== "success") {
+      return TaskUI.mostraNotifica(
+        "Errore nel salvataggio della lista sul server",
+        "danger",
+      );
+    }
+  }
+
+  // Aggiornamento locale (per tutti)
   nomiListe.push(titolo);
   localStorage.setItem(LISTE_KEY, JSON.stringify(nomiListe));
   TaskUI.stampaSingolaLista(titolo);
   if (typeof aggiornaSelectListe === "function") aggiornaSelectListe();
   input.value = "";
+  TaskUI.mostraNotifica("Lista creata con successo!", "success");
 };
 
 //chiediConfermaEliminaLista
 const chiediConfermaEliminaLista = (titolo) => {
   const isLogged = localStorage.getItem("isLogged") === "true";
 
-  // Se non è loggato, mostriamo il banner di avviso invece della conferma
   if (!isLogged) {
     TaskUI.mostraNotifica("Accedi per personalizzare le tue liste!", "info");
-    return; // Ci fermiamo qui
+    apriAuth("signup");
+    return;
   }
 
-  // Se è loggato, procediamo col banner di conferma eliminazione
+  // CONTROLLO DI SICUREZZA: L'utente loggato non può eliminare la sua PRIMA lista (qualsiasi sia il suo nome)
+  if (titolo === nomiListe[0]) {
+    TaskUI.mostraNotifica(`Non puoi eliminare la tua lista principale ("${titolo}")! Però puoi rinominarla.`, "warning");
+    return;
+  }
+
   const box = TaskUI.mostraConfirmEliminaLista(titolo);
-  box.querySelector("#confirm-delete-list").onclick = () => {
-    nomiListe = nomiListe.filter((l) => l !== titolo);
-    lavagna = lavagna.filter((t) => t.lista_riferimento !== titolo);
-    localStorage.setItem(LISTE_KEY, JSON.stringify(nomiListe));
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(lavagna));
-    location.reload();
+  box.querySelector("#confirm-delete-list").onclick = async () => {
+    // UTENTE LOGGATO: Elimina dal Database
+    const data = await TaskAPI.deleteList({ titolo: titolo });
+    
+    if (data.status === "success") {
+      // Pulizia locale a cascata
+      nomiListe = nomiListe.filter((l) => l !== titolo);
+      lavagna = lavagna.filter((t) => t.lista_riferimento !== titolo);
+
+      localStorage.setItem(LISTE_KEY, JSON.stringify(nomiListe));
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(lavagna));
+      
+      TaskUI.mostraNotifica("Lista eliminata", "warning");
+      location.reload();
+    } else {
+      TaskUI.mostraNotifica("Errore durante l'eliminazione sul server", "danger");
+    }
   };
 };
+
 const svuotaLavagna = () => {
   // Rimuoviamo eventuali banner già aperti prima di crearne uno nuovo
   document.querySelector(".alert-danger")?.remove();
@@ -134,24 +191,49 @@ const svuotaLavagna = () => {
 };
 
 // --- FUNZIONI DI GESTIONE TASK ---
-//caricaDati
-const caricaDati = async () => {
-  // 1. Chiediamo i dati al postino (api.js)
-  const data = await TaskAPI.getAll();
 
-  if (data.status === "success") {
-    // UTENTE LOGGATO
-    lavagna = data.data; // Assicurati che il PHP restituisca i task in 'data' o 'tasks'
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(lavagna));
-    TaskUI.gestisciBannerOspite(true); // Usiamo una funzione di ui.js
+// CARICA DATI (Ottimizzata per supportare la rinomina della lista base)
+const caricaDati = async () => {
+  const isLogged = localStorage.getItem("isLogged") === "true";
+
+  if (isLogged) {
+    try {
+      const resListe = await TaskAPI.getLists();
+      if (resListe.status === "success" && resListe.data.length > 0) {
+        nomiListe = resListe.data.map((l) => l.titolo);
+        localStorage.setItem(LISTE_KEY, JSON.stringify(nomiListe));
+      }
+    } catch (e) {
+      console.error("Errore caricamento liste dal server:", e);
+    }
+
+    try {
+      const data = await TaskAPI.getAll();
+      if (data.status === "success") {
+        lavagna = data.data;
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(lavagna));
+        TaskUI.gestisciBannerOspite(true);
+      }
+    } catch (e) {
+      console.error("Errore caricamento task dal server:", e);
+    }
   } else {
-    // UTENTE OSPITE o OFFLINE
+    // UTENTE OSPITE: Recupera la sua struttura locale
+    nomiListe = JSON.parse(localStorage.getItem(LISTE_KEY)) || ["Da smistare"];
     lavagna = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
     TaskUI.gestisciBannerOspite(false);
   }
 
-  // 2. Usiamo l'arredatore per pulire e stampare (ui.js)
+  // Se per qualche motivo l'array è vuoto (es. errore di rete o cache pulita), garantiamo una base
+  if (nomiListe.length === 0) {
+    nomiListe = ["Da smistare"];
+  }
+
+  // 3. RENDERING GRAFICO PULITO
   TaskUI.pulisciLavagna();
+  nomiListe.forEach((titolo) => TaskUI.stampaSingolaLista(titolo));
+
+  if (typeof aggiornaSelectListe === "function") aggiornaSelectListe();
   lavagna.forEach((t) => TaskUI.stampaSingoloTask(t));
 };
 
@@ -165,6 +247,10 @@ const preparaModifica = (titoloTask) => {
   TaskUI.mostraModalModifica(task);
 
   document.getElementById("save-edit-btn").onclick = async () => {
+    // BLOCCO UX: Disattiva i click sul pulsante all'istante
+    document.getElementById("save-edit-btn").style.pointerEvents = "none";
+    // document.getElementById("save-edit-btn").style.opacity = "0.7";
+
     const isLogged = localStorage.getItem("isLogged") === "true";
 
     // Creiamo un nuovo oggetto con i dati aggiornati
@@ -257,15 +343,7 @@ document.addEventListener("DOMContentLoaded", () => {
     dateInput.value = oggi;
   }
 
-  // Garanzia lista base
-  if (!nomiListe.includes("Da smistare")) {
-    nomiListe.unshift("Da smistare");
-  }
-
   // UI Iniziale
-  //  TaskUI.pulisciLavagna(); ripetizione
-  nomiListe.forEach((titolo) => TaskUI.stampaSingolaLista(titolo));
-  TaskUI.aggiornaSelectListe(nomiListe);
   TaskUI.aggiornaUIUtente();
   caricaDati();
 
@@ -358,6 +436,8 @@ document.addEventListener("DOMContentLoaded", () => {
       e.preventDefault();
       const isLogged = localStorage.getItem("isLogged") === "true";
 
+      const listaDefault = nomiListe[0] || "Da smistare";
+
       const objTask = {
         id: isLogged ? null : Date.now(),
         titolo: document.getElementById("task-title").value.trim(),
@@ -365,7 +445,7 @@ document.addEventListener("DOMContentLoaded", () => {
         scadenza: document.getElementById("date-max").value,
         priorita: document.getElementById("priorita").value,
         lista_riferimento:
-          document.getElementById("lista-riferimento").value || "Da smistare",
+          document.getElementById("lista-riferimento").value || listaDefault,
       };
 
       if (isLogged) {

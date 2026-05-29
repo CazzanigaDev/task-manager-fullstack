@@ -168,14 +168,17 @@ const TaskUI = {
   },
 
   stampaSingolaLista: (titolo) => {
-    const container = document.getElementById("container-liste");
-    if (!container) return;
+    const colSinistra = document.getElementById("container-liste-sinistra");
+    const colDestra = document.getElementById("container-liste-destra");
+
+    // Fail-safe nel caso in cui i nuovi ID non siano ancora pronti nel DOM
+    if (!colSinistra || !colDestra) return;
 
     const col = document.createElement("div");
-    col.className = "col-12 col-lg-6 mb-4 fade-in";
+    col.className = "w-100 mb-4 fade-in";
     col.id = `lista-${titolo.replace(/\s+/g, "")}`;
     col.innerHTML = `
-            <div class="card card-zen shadow-sm border-0 h-100">
+            <div class="card card-zen shadow-sm border-0">
                 <div class="card-body p-4">
                     <div class="d-flex justify-content-between align-items-center mb-3">
                         <h5 class="fw-bold text-primary-zen mb-0 editable-title">${titolo}</h5>
@@ -192,7 +195,14 @@ const TaskUI = {
                     <div class="contenitore-task"></div>
                 </div>
             </div>`;
-    container.appendChild(col);
+
+    // ALGORITMO DI BILANCIAMENTO MASONRY
+    // Controlliamo il numero di figli (o l'altezza stimata) per decidere dove appendere
+    if (colSinistra.children.length <= colDestra.children.length) {
+      colSinistra.appendChild(col);
+    } else {
+      colDestra.appendChild(col);
+    }
   },
 
   attivaEditLista: (elemento, vecchioTitolo) => {

@@ -1,4 +1,4 @@
-<?php 
+<?php
 ini_set('display_errors', 1);
 error_reporting(E_ALL);
 
@@ -19,7 +19,7 @@ if (file_exists(__DIR__ . '/config/db_config.php')) {
         header('Content-Type: application/json');
         die(json_encode(['status' => 'error', 'message' => "Errore di connessione: " . $e->getMessage()]));
     }
-} 
+}
 ?>
 
 <!DOCTYPE html>
@@ -87,13 +87,13 @@ if (file_exists(__DIR__ . '/config/db_config.php')) {
         </div>
     </nav>
 
-    <main class="container py-4 mt-2">
-        <div class="row mb-5 align-items-center">
+ <main class="container-fluid px-4 py-4 mt-2">
+        <div class="row mb-5 align-items-end">
             <div class="col-md-8">
                 <h2 class="display-6 fw-bold mb-1">Benvenuta nella tua calma.</h2>
-                <p class="text-muted">Organizza i tuoi flussi di lavoro senza stress.</p>
+                <p class="text-muted mb-0">Organizza i tuoi flussi di lavoro senza stress.</p>
             </div>
-            <div class="col-md-4 text-md-end">
+            <div class="col-md-4 text-md-end mt-3 mt-md-0">
                 <button class="btn btn-svuota-zen" id="btn-empty-all">
                     <i class="bi bi-trash3 me-1"></i> Svuota Lavagna
                 </button>
@@ -101,12 +101,12 @@ if (file_exists(__DIR__ . '/config/db_config.php')) {
         </div>
 
         <div class="row g-4">
-            <div class="col-lg-4">
+            <div class="col-12 col-md-4 col-xl-3">
                 <div class="sticky-top-custom">
 
                     <div class="card card-zen mb-4">
                         <div class="card-body p-4">
-                            <h6 class="card-label mb-3">NUOVA AREA</h6>
+                            <h6 class="card-label mb-3">NUOVA LISTA</h6>
                             <div class="input-group mb-3">
                                 <input type="text" class="form-control form-control-zen" id="list-title" placeholder="Es. Lavoro, Casa..." required>
                                 <button class="btn btn-add-list" id="btn-add-list">
@@ -118,7 +118,7 @@ if (file_exists(__DIR__ . '/config/db_config.php')) {
 
                     <div class="card card-zen shadow-sm">
                         <div class="card-body p-4">
-                            <h6 class="card-label mb-4">DETTAGLI TASK</h6>
+                            <h6 class="card-label mb-4">NUOVO TASK</h6>
                             <form id="book-form">
                                 <div class="mb-3">
                                     <input type="text" class="form-control form-control-zen" id="task-title" placeholder="Titolo dell'attività" required>
@@ -140,11 +140,11 @@ if (file_exists(__DIR__ . '/config/db_config.php')) {
                                 </div>
                                 <div class="mb-4">
                                     <select class="form-select form-control-zen" id="lista-riferimento" required>
-                                        <option value="">Destinazione...</option>
+                                        <option value="">Lista...</option>
                                     </select>
                                 </div>
                                 <button type="submit" class="btn btn-zen-primary w-100 py-2">
-                                    Conferma Task
+                                    Aggiungi Task
                                 </button>
                             </form>
                         </div>
@@ -152,13 +152,14 @@ if (file_exists(__DIR__ . '/config/db_config.php')) {
                 </div>
             </div>
 
-            <div class="col-lg-8">
-                <div class="row g-4" id="container-liste">
+            <div class="col-12 col-md-8 col-xl-9">
+                <div class="row g-4" id="bacheca-liste">
+                    <div class="col-12 col-sm-6" id="container-liste-sinistra"></div>
+                    <div class="col-12 col-sm-6" id="container-liste-destra"></div>
                 </div>
             </div>
         </div>
     </main>
-
 
     <div class="modal fade" id="authModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
@@ -209,7 +210,7 @@ if (file_exists(__DIR__ . '/config/db_config.php')) {
         </div>
     </div>
 
-<!-- async — scarica lo script in parallelo senza bloccare la pagina --- defer — esegue lo script solo dopo che il DOM è pronto -->
+    <!-- async — scarica lo script in parallelo senza bloccare la pagina --- defer — esegue lo script solo dopo che il DOM è pronto -->
     <script src="https://www.google.com/recaptcha/api.js" async defer></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="assets/js/api.js"></script>
