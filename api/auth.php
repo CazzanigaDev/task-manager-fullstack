@@ -2,10 +2,31 @@
 session_start();
 
 //codice per leggere il file env
-$env = parse_ini_file(__DIR__ . '/../.env');
-$captchaSecret = $env['RECAPTCHA_SECRET_KEY'] ?? '';
+if (file_exists(__DIR__ . '/../.env')) {
+    $env = parse_ini_file(__DIR__ . '/../.env');
+    $captchaSecret = $env['RECAPTCHA_SECRET_KEY'] ?? '';
+} else {
+    $captchaSecret = getenv('RECAPTCHA_SECRET_KEY') ?: '';
+}
 
-require_once '../config/db_config.php';
+if (file_exists(__DIR__ . '/../config/db_config.php')) {
+    require_once __DIR__ . '/../config/db_config.php';
+} else {
+    $host     = getenv('DB_HOST')     ?: 'localhost';
+    $dbname   = getenv('DB_NAME')     ?: 'task_manager_db';
+    $user     = getenv('DB_USER')     ?: 'root';
+    $password = getenv('DB_PASSWORD') ?: '';
+    $port     = getenv('DB_PORT')     ?: '3306';
+    try {
+        $pdo = new PDO("mysql:host=$host;port=$port;dbname=$dbname;charset=utf8mb4", $user, $password);
+        $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        $pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
+    } catch (PDOException $e) {
+        header('Content-Type: application/json');
+        die(json_encode(['status' => 'error', 'message' => "Errore di connessione: " . $e->getMessage()]));
+    }
+}
+
 header('Content-Type: application/json');
 
 $data = json_decode(file_get_contents("php://input"), true);
