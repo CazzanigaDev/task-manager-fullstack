@@ -18,7 +18,9 @@ const TaskUI = {
 
     if (cardLista) {
       const contenitoreTask = cardLista.querySelector(".contenitore-task");
-      const placeholder = contenitoreTask.querySelector("p.text-muted");
+      const placeholder = contenitoreTask.querySelector(
+        "p.text-muted, .empty-state-text",
+      );
       if (placeholder) placeholder.remove();
 
       // Preview testo
@@ -192,7 +194,11 @@ const TaskUI = {
                         </div>
                     </div>
                     <hr class="opacity-10">
-                    <div class="contenitore-task"></div>
+                    <div class="contenitore-task">
+                        <div class="empty-state-text text-center py-3 opacity-50">
+                            <span class="fst-italic small text-secondary">Nessun task in questa lista.</span>
+                        </div>
+                    </div>
                 </div>
             </div>`;
 

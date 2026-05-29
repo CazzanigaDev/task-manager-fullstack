@@ -242,3 +242,39 @@ body {
         margin-bottom: 0 !important;
     }
 }
+
+/* --- OTTIMIZZAZIONE RESPONSIVE DEFINITIVA (<= 576px) --- */
+@media (max-width: 576px) {
+  body .modal-dialog {
+    margin: 0.5rem !important;
+    display: flex;
+    align-items: center;
+    min-height: calc(100% - 1rem);
+  }
+
+  /* Forziamo la riduzione del p-5 di Bootstrap solo dentro le modali su mobile */
+  body .modal-content .p-5,
+  body .modal-body .p-5 {
+    padding: 1.5rem 2rem !important; 
+  }
+
+  body .modal-content {
+    border-radius: 1rem !important;
+  }
+
+  /* Stringiamo i margini dei campi per compattare l'altezza totale */
+  body .modal-content .mb-3,
+  body .modal-content .mb-4 {
+    margin-bottom: 0.85rem !important;
+  }
+
+  /* FIX GOOGLE RECAPTCHA: entra al millimetro */
+  #recaptcha-group iframe, 
+  .g-recaptcha {
+    transform: scale(0.85);
+    -webkit-transform: scale(0.85);
+    transform-origin: 0 0;
+    -webkit-transform-origin: 0 0;
+    max-width: 100%;
+  }
+}

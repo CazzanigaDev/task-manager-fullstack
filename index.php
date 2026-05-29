@@ -38,8 +38,8 @@ if (file_exists(__DIR__ . '/config/db_config.php')) {
 
     <!-- favicon TODO -->
     <link rel="icon" type="image/png" href="assets/img/favicon.png">
-    <link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png">
-
+    <!--     <link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png">      -->
+         
     <!-- performance -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -48,7 +48,7 @@ if (file_exists(__DIR__ . '/config/db_config.php')) {
 
     <!-- font e librerie -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Plus+Jakarta+Sans:wght@500;700&display=swap" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
 
     <!--  OPEN GRAPH (anteprima su social e link) da aggiungere una volta terminata l'app -->
@@ -87,7 +87,7 @@ if (file_exists(__DIR__ . '/config/db_config.php')) {
         </div>
     </nav>
 
- <main class="container-fluid px-4 py-4 mt-2">
+    <main class="container-fluid px-4 py-4 mt-2">
         <div class="row mb-5 align-items-end">
             <div class="col-md-8">
                 <h2 class="display-6 fw-bold mb-1">Benvenuta nella tua calma.</h2>
@@ -212,7 +212,7 @@ if (file_exists(__DIR__ . '/config/db_config.php')) {
 
     <!-- async — scarica lo script in parallelo senza bloccare la pagina --- defer — esegue lo script solo dopo che il DOM è pronto -->
     <script src="https://www.google.com/recaptcha/api.js" async defer></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="assets/js/api.js"></script>
     <script src="assets/js/ui.js"></script>
     <script src="assets/js/app.js"></script>

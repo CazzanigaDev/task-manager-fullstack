@@ -1,5 +1,6 @@
 <?php
-echo "DB_HOST: " . getenv('DB_HOST') . "\n";
-echo "DB_NAME: " . getenv('DB_NAME') . "\n";
-echo "DB_PORT: " . getenv('DB_PORT') . "\n";
-echo "DB_USER: " . getenv('DB_USER') . "\n";
+var_dump($_ENV);
+var_dump($_SERVER['DB_HOST'] ?? 'non trovato');
+echo getenv('DB_HOST');
+$all = getenv();
+var_dump($all);

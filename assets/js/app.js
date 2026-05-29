@@ -28,6 +28,12 @@ const logout = async () => {
       localStorage.removeItem("isLogged");
       localStorage.removeItem("userZen");
 
+      // 2. --- FIX PERSISTENZA --- 
+      // Rimuoviamo i dati dell'utente loggato per evitare che l'ospite li veda
+      localStorage.removeItem(LISTE_KEY);   // Cancella le liste del DB salvate in locale
+      localStorage.removeItem(STORAGE_KEY); // Cancella i task del DB salvati in locale
+
+      // 3. Feedback e reindirizzamento
       TaskUI.mostraNotifica("Sessione terminata", "info");
       setTimeout(() => (location.href = "index.php"), 1000); // Ricarica pulito
     }
