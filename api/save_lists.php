@@ -1,8 +1,9 @@
 <?php
 session_start();
-
 if (file_exists(__DIR__ . '/../config/db_config.php')) {
     require_once __DIR__ . '/../config/db_config.php';
+} elseif (file_exists(__DIR__ . '/../config/db_config_railway.php')) {
+    require_once __DIR__ . '/../config/db_config_railway.php';
 } else {
     header('Content-Type: application/json');
     die(json_encode(['status' => 'error', 'message' => 'Configurazione DB mancante']));

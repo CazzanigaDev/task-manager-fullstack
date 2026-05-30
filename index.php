@@ -3,8 +3,10 @@ ini_set('display_errors', 1);
 error_reporting(E_ALL);
 
 // require_once 'config/db_config.php';
-if (file_exists(__DIR__ . '/config/db_config.php')) {
-    require_once __DIR__ . '/config/db_config.php';
+if (file_exists(__DIR__ . '/../config/db_config.php')) {
+    require_once __DIR__ . '/../config/db_config.php';
+} elseif (file_exists(__DIR__ . '/../config/db_config_railway.php')) {
+    require_once __DIR__ . '/../config/db_config_railway.php';
 } else {
     $host     = getenv('DB_HOST')     ?: 'localhost';
     $dbname   = getenv('DB_NAME')     ?: 'task_manager_db';
@@ -39,7 +41,7 @@ if (file_exists(__DIR__ . '/config/db_config.php')) {
     <!-- favicon TODO -->
     <link rel="icon" type="image/png" href="assets/img/favicon.png">
     <!--     <link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png">      -->
-         
+
     <!-- performance -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
