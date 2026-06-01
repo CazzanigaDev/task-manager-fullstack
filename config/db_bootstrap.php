@@ -10,7 +10,7 @@ if (file_exists($configDir . '/db_config.php')) {
 $host     = 'mysql.railway.internal';
 $dbname   = 'railway';
 $user     = 'root';
-$password = getenv('MYSQLPASSWORD') ?: '';
+$password = getenv('DB_PASSWORD') ?: '';
 $port     = '3306';
 
 try {
