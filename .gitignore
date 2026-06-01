@@ -10,3 +10,6 @@ Thumbs.db
 
 #variabili railway
 config/db_config_railway.php
+
+#configurazione
+config/db_bootstrap.php
