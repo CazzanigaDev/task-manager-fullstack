@@ -9,10 +9,11 @@ if (file_exists(__DIR__ . '/../.env')) {
     $captchaSecret = getenv('RECAPTCHA_SECRET_KEY') ?: '';
 }
 
-if (file_exists(__DIR__ . '/../config/db_config.php')) {
-    require_once __DIR__ . '/../config/db_config.php';
-} elseif (file_exists(__DIR__ . '/../config/db_config_railway.php')) {
-    require_once __DIR__ . '/../config/db_config_railway.php';
+$baseDir = dirname(__DIR__);
+if (file_exists($baseDir . '/config/db_config.php')) {
+    require_once $baseDir . '/config/db_config.php';
+} elseif (file_exists($baseDir . '/config/db_config_railway.php')) {
+    require_once $baseDir . '/config/db_config_railway.php';
 } else {
     $host     = getenv('DB_HOST')     ?: 'localhost';
     $dbname   = getenv('DB_NAME')     ?: 'task_manager_db';
